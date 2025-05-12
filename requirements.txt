@@ -7,3 +7,4 @@ gunicorn
 openai
 requests
 certifi
+openai<1.0
