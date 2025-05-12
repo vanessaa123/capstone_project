@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2>Get a Book or Movie Recommendation</h2>
+
+<form method="POST" class="mb-4">
+  <div class="mb-3">
+    <label for="prompt" class="form-label">What are you in the mood for?</label>
+    <textarea class="form-control" name="prompt" id="prompt" rows="3" required></textarea>
+  </div>
+  <button type="submit" class="btn btn-custom">Get Recommendation</button>
+</form>
+
+{% if recommendation %}
+<div class="card">
+  <div class="card-body">
+    <h5 class="card-title">Your Recommendation</h5>
+    <p class="card-text">{{ recommendation }}</p>
+  </div>
+</div>
+{% endif %}
+{% endblock %}

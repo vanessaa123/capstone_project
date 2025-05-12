@@ -1,0 +1,109 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2>Your Stats</h2>
+
+<ul class="list-group mb-4">
+  <li class="list-group-item"><strong>Books Completed:</strong> {{ total_books }}</li>
+  <li class="list-group-item"><strong>Movies Watched:</strong> {{ total_movies }}</li>
+  <li class="list-group-item">
+    <strong>Average Rating:</strong>
+    {% if average_rating %}
+      {{ average_rating }}/5 ⭐
+    {% else %}
+      No rated items yet.
+    {% endif %}
+  </li>
+</ul>
+
+<h2>Top Rated Reviews</h2>
+{% if top_reviews %}
+  <ul class="list-group mb-4">
+    {% for review in top_reviews %}
+      <li class="list-group-item">
+        <strong>{{ review.title }} ({{ review.type }})</strong><br>
+        Rating: {{ review.rating }}/5 ⭐<br>
+        <em>{{ review.content }}</em>
+      </li>
+    {% endfor %}
+  </ul>
+{% else %}
+  <p>No top-rated reviews yet.</p>
+{% endif %}
+
+<h2>Lowest Rated Review</h2>
+{% if lowest_review %}
+  <div class="card mb-4">
+    <div class="card-body">
+      <strong>{{ lowest_review.title }} ({{ lowest_review.type }})</strong><br>
+      Rating: {{ lowest_review.rating }}/5 ⭐<br>
+      <em>{{ lowest_review.content }}</em>
+    </div>
+  </div>
+{% else %}
+  <p>No rated reviews to show.</p>
+{% endif %}
+
+<h2 class="mt-5">Ratings</h2>
+<canvas id="ratingChart" height="150"></canvas>
+
+<!-- Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+  const ctx = document.getElementById('ratingChart').getContext('2d');
+  const ratingChart = new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: {{ rating_labels|tojson }},
+      datasets: [{
+        label: 'Number of Reviews',
+        data: {{ rating_data|tojson }},
+        backgroundColor: 'rgba(54, 162, 235, 0.6)',
+        borderColor: 'rgba(54, 162, 235, 1)',
+        borderWidth: 1
+      }]
+    },
+    options: {
+      scales: {
+        y: {
+          beginAtZero: true,
+          ticks: {
+            precision: 0
+          }
+        }
+      }
+    }
+  });
+</script>
+
+<h3 class="mt-5">Reviews Over Time</h3>
+<canvas id="reviewsOverTime" height="150"></canvas>
+
+<script>
+  const ctxLine = document.getElementById('reviewsOverTime').getContext('2d');
+  const reviewLineChart = new Chart(ctxLine, {
+    type: 'line',
+    data: {
+      labels: {{ review_dates | tojson }},
+      datasets: [{
+        label: 'Reviews per Day',
+        data: {{ review_counts | tojson }},
+        fill: false,
+        borderColor: 'rgba(255, 99, 132, 1)',
+        tension: 0.2
+      }]
+    },
+    options: {
+      responsive: true,
+      scales: {
+        y: {
+          beginAtZero: true,
+          ticks: {
+            precision: 0
+          }
+        }
+      }
+    }
+  });
+</script>
+
+{% endblock %}

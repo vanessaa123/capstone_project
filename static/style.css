@@ -1,0 +1,63 @@
+body {
+    padding-top: 100px;
+    padding-left: 70px;
+    padding-right: 70px;
+    background-color:rgb(252, 251, 248);
+}
+
+h1, h2 {
+    margin-bottom: 1rem;
+    font-family: "Nanum Myeongjo", serif;
+}
+
+h1 {
+    font-size: 90px;
+}
+
+p {
+    font-family: 'Lato', sans-serif;
+}
+
+.navbar-logo {
+    height: 60px;    /* increase as needed */
+    width: auto;     /* maintain aspect ratio */
+}
+
+.navbar {
+    font-family: 'Lato', sans-serif;
+    background-color:antiquewhite;
+}
+
+.nanum-myeongjo-regular {
+    font-family: "Nanum Myeongjo", serif;
+    font-weight: 400;
+    font-style: normal;
+}
+  
+.btn-custom {
+    background-color: #000;         /* Black background */
+    color: #fff;                    /* White text */
+    border-radius: 30px;            /* Makes the button oval */
+    padding: 8px 20px;             /* Extra padding for height/width */
+    font-size: 1.1rem;              /* Optional: slightly larger text */
+    border: none;                   /* Removes border if desired */
+}
+
+.btn-custom {
+    background-color: #000;         /* Black background */
+    color: #fff;                    /* White text */
+    border-radius: 30px;            /* Makes the button oval */
+    padding: 8px 18px;             /* Extra padding for height/width */
+    font-size: 1.1rem;              /* Optional: slightly larger text */
+    border: none;                   /* Removes border if desired */
+}
+
+.btn-custom:hover {
+    background-color: #333;         /* Slightly lighter on hover */
+    color: #fff;
+}
+
+.btn-search {
+    font-size: 15px;
+}
+

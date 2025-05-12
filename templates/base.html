@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>HobbyHorse</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lato&family=Nanum+Myeongjo&display=swap" rel="stylesheet">
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-light weight-100 fixed-top">
+        <div class="container-fluid">
+            <!-- Logo + Brand -->
+            <a class="navbar-brand d-flex align-items-center" href="{{ url_for('index') }}">
+              <img src="{{ url_for('static', filename='HobbyHorse_logo-removebg-preview.png') }}" alt="Logo" height="100" class="navbar-logo me-2">
+            </a>
+            <div class="collapse navbar-collapse">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">                  
+                    {% if session.get('username') %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ url_for('dashboard') }}">Dashboard</a>
+                        </li>
+                        <li class="nav-item">
+                          <a class="nav-link" href="{{ url_for('reviews_page') }}">Reviews</a>
+                        </li>
+                        <li class="nav-item">
+                          <a class="nav-link" href="{{ url_for('view_up_next') }}">Up Next</a>
+                        </li>
+                        <li class="nav-item">
+                          <a class="nav-link" href="{{ url_for('stats') }}">Stats</a>
+                        </li> 
+                        <li class="nav-item">
+                          <a class="nav-link" href="{{ url_for('recommendations') }}">Recommendations</a>
+                        </li>                        
+                        {% if session.get('is_admin') %}
+                        <li class="nav-item">
+                          <a class="nav-link" href="{{ url_for('admin_users') }}">Admin</a>
+                        </li>
+                        {% endif %}                                               
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ url_for('logout') }}">Logout</a>
+                        </li>
+                    {% else %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ url_for('login') }}">Login</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ url_for('register') }}">Register</a>
+                        </li>
+                    {% endif %}
+                    {% if session.get('is_admin') %}
+                    <li class="nav-item">
+                      <span class="badge bg-danger ms-2 align-self-center">Admin Mode</span>
+                    </li>
+                    {% endif %}
+                </ul>
+
+                <!-- Search Bar -->
+                <form class="d-flex" action="{{ url_for('search') }}" method="GET">
+                    <input class="form-control me-2" type="search" name="query" placeholder="Search..." aria-label="Search">
+                    <select name="type" class="form-select me-2">
+                        <option value="books">Books</option>
+                        <option value="movies">Movies/Shows</option>
+                    </select>
+                    <button class="btn btn-custom btn-search" type="submit">Search</button>
+                </form>
+            </div>
+        </div>
+    </nav>
+
+    {% with messages = get_flashed_messages() %}
+      {% if messages %}
+        {% for message in messages %}
+          <div class="alert alert-info">{{ message }}</div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+
+    {% block content %}{% endblock %}
+</body>
+</html>
+

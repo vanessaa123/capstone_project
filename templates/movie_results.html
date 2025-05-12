@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2>Movie Search Results for "{{ search_query }}"</h2>
+
+{% if movies %}
+  <div class="row">
+    {% for movie in movies %}
+      <div class="col-md-4 mb-3">
+        <div class="card">
+          {% if movie.Poster and movie.Poster != "N/A" %}
+            <img src="{{ movie.Poster }}" class="card-img-top" alt="{{ movie.Title }}">
+          {% endif %}
+          <form action="{{ url_for('save_review') }}" method="POST">
+            <input type="hidden" name="title" value="{{ movie.Title }}">
+            <input type="hidden" name="type" value="Movie">
+            <input type="hidden" name="content" value="Year: {{ movie.Year }} | Type: {{ movie.Type }}">
+            <button type="submit" class="btn btn-sm btn-custom mt-2">Save to My Reviews</button>
+            </form> 
+            <form action="{{ url_for('add_up_next') }}" method="POST" class="mt-1">
+                <input type="hidden" name="title" value="{{ movie.Title }}">
+                <input type="hidden" name="type" value="Movie">
+                <input type="hidden" name="info" value="Year: {{ movie.Year }} | Type: {{ movie.Type }}">
+                <button type="submit" class="btn btn-sm btn-outline-custom">Add to Up Next</button>
+            </form>                   
+          <div class="card-body">
+            <h5 class="card-title">{{ movie.Title }}</h5>
+            <p class="card-text">{{ movie.Year }}</p>
+            <p class="card-text"><em>{{ movie.Type | capitalize }}</em></p>
+          </div>
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+{% else %}
+  <p>No movies found.</p>
+{% endif %}
+{% endblock %}

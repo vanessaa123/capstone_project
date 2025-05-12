@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2>Edit Review</h2>
+<form method="POST">
+    <div class="mb-3">
+        <label>Title</label>
+        <input type="text" name="title" class="form-control" value="{{ review.title }}" required>
+    </div>
+    <div class="mb-3">
+        <label>Type</label>
+        <select name="type" class="form-control">
+            <option value="Book" {% if review.type == "Book" %}selected{% endif %}>Book</option>
+            <option value="Movie" {% if review.type == "Movie" %}selected{% endif %}>Movie</option>
+            <option value="Show" {% if review.type == "Show" %}selected{% endif %}>Show</option>
+        </select>
+    </div>
+    <div class="mb-3">
+        <label>Rating</label>
+        <select name="rating" class="form-control" required>
+            <option disabled selected value="">Select a rating</option>
+            {% for i in range(1, 11) %}
+                <option value="{{ i / 2 }}">{{ i / 2 }}</option>
+            {% endfor %}
+        </select>
+    </div>
+    <div class="mb-3">
+        <label>Review</label>
+        <textarea name="content" class="form-control" rows="4" required>{{ review.content }}</textarea>
+    </div>
+    <button type="submit" class="btn btn-custom">Update Review</button>
+</form>
+{% endblock %}

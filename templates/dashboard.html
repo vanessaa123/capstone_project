@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<h2>Your Reviews</h2>
+<a href="{{ url_for('create_review') }}" class="btn btn-custom mb-3">+ Add New Review</a>
+
+{% if reviews %}
+    <ul class="list-group mb-4">
+        {% for review in reviews %}
+            <li class="list-group-item">
+                <strong>{{ review.title }} ({{ review.type }})</strong>
+                <p><strong>Rating:</strong> {{ review.rating }}/5 ⭐</p>
+                <p>{{ review.content }}</p>
+                <a href="{{ url_for('edit_review', review_id=review._id) }}" class="btn btn-sm btn-warning">Edit</a>
+                <a href="{{ url_for('delete_review', review_id=review._id) }}" class="btn btn-sm btn-danger">Delete</a>
+            </li>
+        {% endfor %}
+    </ul>
+{% else %}
+    <p>You haven't added any reviews yet.</p>
+{% endif %}
+
+<hr>
+
+<h2>Up Next: Books</h3>
+{% if up_next_books %}
+    <ul class="list-group mb-4">
+        {% for item in up_next_books %}
+            <li class="list-group-item">
+                <strong>{{ item.title }}</strong>
+                <p>{{ item.info }}</p>
+            </li>
+        {% endfor %}
+    </ul>
+{% else %}
+    <p>No books in your Up Next list.</p>
+{% endif %}
+
+<hr>
+
+<h2>Up Next: Movies</h3>
+{% if up_next_movies %}
+    <ul class="list-group mb-4">
+        {% for item in up_next_movies %}
+            <li class="list-group-item">
+                <strong>{{ item.title }}</strong>
+                <p>{{ item.info }}</p>
+            </li>
+        {% endfor %}
+    </ul>
+{% else %}
+    <p>No movies in your Up Next list.</p>
+{% endif %}
+
+{% endblock %}

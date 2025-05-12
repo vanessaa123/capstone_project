@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2>All Users</h2>
+<a href="{{ url_for('add_user') }}" class="btn btn-success mb-3">+ Add User</a>
+<ul class="list-group">
+  {% for user in users %}
+    <li class="list-group-item d-flex justify-content-between align-items-center">
+      {{ user.username }}
+      <form method="POST" action="{{ url_for('delete_user', user_id=user._id) }}">
+        <button class="btn btn-danger btn-sm">Delete</button>
+      </form>
+    </li>
+  {% endfor %}
+</ul>
+{% endblock %}
