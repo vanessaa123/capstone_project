@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 {% block content %}
-<h2>Get a Book or Movie Recommendation</h2>
+<h2>HorseAI Recommendation</h2>
 
 <form method="POST" class="mb-4">
   <div class="mb-3">
@@ -14,7 +14,7 @@
 <div class="card">
   <div class="card-body">
     <h5 class="card-title">Your Recommendation</h5>
-    <p class="card-text">{{ recommendation }}</p>
+    <p class="card-text">{{ recommendation | replace('\n', '<br>') | safe }}</p>
   </div>
 </div>
 {% endif %}
