@@ -6,3 +6,4 @@ werkzeug
 gunicorn
 openai
 requests
+certifi
