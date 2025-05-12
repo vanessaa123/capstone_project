@@ -1,4 +1,7 @@
 Flask
 pymongo
+dnspython
 python-dotenv
 werkzeug
+gunicorn
+openai
