@@ -5,31 +5,13 @@
 {% if books %}
     <ul class="list-group">
         {% for book in books %}
-            <li class="list-group-item">
-                <strong>{{ book.title }}</strong>
-                <p>Author: {{ book.author_name | join(', ') if book.author_name }}</p>
-
-                {% if book.cover_i %}
-                    <img src="https://covers.openlibrary.org/b/id/{{ book.cover_i }}-M.jpg" alt="{{ book.title }}">
-                {% endif %}
-
-                <!-- Save Form -->
-                <form action="{{ url_for('save_review') }}" method="POST" class="mt-2">
-                    <input type="hidden" name="title" value="{{ book.title }}">
-                    <input type="hidden" name="type" value="Book">
-                    <input type="hidden" name="content" value="Author(s): {{ book.author_name | join(', ') if book.author_name }}">
-                    <button type="submit" class="btn btn-sm btn-custom">Save to My Reviews</button>
-                </form>
-
-                <!--Add to Up Next-->
-                <form action="{{ url_for('add_up_next') }}" method="POST" class="mt-1">
-                    <input type="hidden" name="title" value="{{ book.title }}">
-                    <input type="hidden" name="type" value="Book">
-                    <input type="hidden" name="info" value="Author(s): {{ book.author_name | join(', ') if book.author_name }}">
-                    <button type="submit" class="btn btn-sm btn-custom">Add to Up Next</button>
-                </form>
-                
-            </li>
+            {% set item = {
+                'title': book.title,
+                'type': 'Book',
+                'meta': 'Author(s): ' ~ (book.author_name | join(', ') if book.author_name else ''),
+                'image': 'https://covers.openlibrary.org/b/id/' ~ book.cover_i ~ '-M.jpg' if book.cover_i else None
+            } %}
+            {% include '_result_card.html' %}
         {% endfor %}
     </ul>
 {% else %}

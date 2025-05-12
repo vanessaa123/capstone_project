@@ -1,0 +1,26 @@
+<li class="list-group-item">
+    <strong>{{ item.title }}</strong>
+    {% if item.meta %}
+        <p>{{ item.meta }}</p>
+    {% endif %}
+
+    {% if item.image %}
+        <img src="{{ item.image }}" alt="{{ item.title }}" style="max-width: 150px;">
+    {% endif %}
+
+    <!-- Save Form -->
+    <form action="{{ url_for('save_review') }}" method="POST" class="mt-2">
+        <input type="hidden" name="title" value="{{ item.title }}">
+        <input type="hidden" name="type" value="{{ item.type }}">
+        <input type="hidden" name="content" value="{{ item.meta }}">
+        <button type="submit" class="btn btn-sm btn-custom">Save to My Reviews</button>
+    </form>
+
+    <!-- Add to Up Next -->
+    <form action="{{ url_for('add_up_next') }}" method="POST" class="mt-1">
+        <input type="hidden" name="title" value="{{ item.title }}">
+        <input type="hidden" name="type" value="{{ item.type }}">
+        <input type="hidden" name="info" value="{{ item.meta }}">
+        <button type="submit" class="btn btn-sm btn-custom">Add to Up Next</button>
+    </form>
+</li>

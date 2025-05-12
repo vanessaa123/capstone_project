@@ -1,28 +1,51 @@
 {% extends 'base.html' %}
 {% block content %}
+
 <h2>Up Next</h2>
 
+<!-- Filter Buttons -->
+<div class="mb-3">
+  <button class="btn btn-custom filter-btn" data-filter="all">All</button>
+  <button class="btn btn-custom filter-btn" data-filter="Book">Books</button>
+  <button class="btn btn-custom filter-btn" data-filter="Movie/Show">Movies</button>
+</div>
+
+<!-- Up Next Items -->
 {% if items %}
-    <ul class="list-group">
-        {% for item in items %}
-            <li class="list-group-item">
-                <strong>{{ item.title }}</strong> ({{ item.type }})
-                <p>{{ item.info }}</p>
-                <form method="POST" action="{{ url_for('convert_up_next') }}" style="display:inline;">
-                    <input type="hidden" name="title" value="{{ item.title }}">
-                    <input type="hidden" name="type" value="{{ item.type }}">
-                    <input type="hidden" name="content" value="{{ item.info }}">
-                    <input type="hidden" name="item_id" value="{{ item._id }}">
-                    <button class="btn btn-sm btn-success">Mark as Finished</button>
-                </form>                
-                <form method="POST" action="{{ url_for('remove_up_next') }}" style="display:inline;">
-                    <input type="hidden" name="item_id" value="{{ item._id }}">
-                    <button class="btn btn-sm btn-danger">Remove</button>
-                </form>
-            </li>
-        {% endfor %}
-    </ul>
+  <ul class="list-group" id="upNextList">
+    {% for item in items %}
+      <li class="list-group-item up-next-item" data-type="{{ item.type }}">
+        <strong>{{ item.title }}</strong> ({{ item.type }})
+        <p>{{ item.info }}</p>
+        <form method="POST" action="{{ url_for('remove_up_next') }}" style="display:inline;">
+          <input type="hidden" name="item_id" value="{{ item._id }}">
+          <button class="btn btn-sm btn-danger">Remove</button>
+        </form>
+      </li>
+    {% endfor %}
+  </ul>
 {% else %}
-    <p>You haven’t added anything to your Up Next list yet.</p>
+  <p>You haven’t added anything to your Up Next list yet.</p>
 {% endif %}
+
+<!-- JS Filter Script -->
+<script>
+  const filterButtons = document.querySelectorAll('.filter-btn');
+  const items = document.querySelectorAll('.up-next-item');
+
+  filterButtons.forEach(button => {
+    button.addEventListener('click', () => {
+      const filter = button.getAttribute('data-filter');
+      items.forEach(item => {
+        const type = item.getAttribute('data-type');
+        if (filter === 'all' || type === filter) {
+          item.style.display = 'block';
+        } else {
+          item.style.display = 'none';
+        }
+      });
+    });
+  });
+</script>
+
 {% endblock %}
