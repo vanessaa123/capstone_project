@@ -1,26 +1,48 @@
-<li class="list-group-item">
-    <strong>{{ item.title }}</strong>
-    {% if item.meta %}
-        <p>{{ item.meta }}</p>
-    {% endif %}
-
-    {% if item.image %}
-        <img src="{{ item.image }}" alt="{{ item.title }}" style="max-width: 150px;">
-    {% endif %}
-
-    <!-- Save Form -->
-    <form action="{{ url_for('save_review') }}" method="POST" class="mt-2">
-        <input type="hidden" name="title" value="{{ item.title }}">
-        <input type="hidden" name="type" value="{{ item.type }}">
-        <input type="hidden" name="content" value="{{ item.meta }}">
-        <button type="submit" class="btn btn-sm btn-custom">Save to My Reviews</button>
-    </form>
-
-    <!-- Add to Up Next -->
-    <form action="{{ url_for('add_up_next') }}" method="POST" class="mt-1">
-        <input type="hidden" name="title" value="{{ item.title }}">
-        <input type="hidden" name="type" value="{{ item.type }}">
-        <input type="hidden" name="info" value="{{ item.meta }}">
-        <button type="submit" class="btn btn-sm btn-custom">Add to Up Next</button>
-    </form>
-</li>
+<div class="card mb-3 shadow-sm">
+    <div class="row g-0">
+      {% if item.image %}
+      <div class="col-md-3 d-flex align-items-center justify-content-center p-2">
+        <img src="{{ item.image }}" class="img-fluid rounded-start" alt="{{ item.title }}" style="max-height: 160px;">
+      </div>
+      {% endif %}
+      <div class="col-md-9">
+        <div class="card-body">
+          <h5 class="card-title d-flex justify-content-between align-items-center">
+            {{ item.title }}
+            {% if favorites and item.title in favorites %}
+              <span style="color: red;">❤️</span>
+            {% endif %}
+          </h5>
+          {% if item.meta %}
+            <p class="card-text"><small class="text-muted">{{ item.meta }}</small></p>
+          {% endif %}
+  
+          <div class="d-flex flex-wrap gap-2">
+            <!-- Save to Reviews -->
+            <form action="{{ url_for('save_review') }}" method="POST">
+              <input type="hidden" name="title" value="{{ item.title }}">
+              <input type="hidden" name="type" value="{{ item.type }}">
+              <input type="hidden" name="content" value="{{ item.meta }}">
+              <button type="submit" class="btn btn-sm btn-custom">Finished</button>
+            </form>
+  
+            <!-- Add to Up Next -->
+            <form action="{{ url_for('add_up_next') }}" method="POST">
+              <input type="hidden" name="title" value="{{ item.title }}">
+              <input type="hidden" name="type" value="{{ item.type }}">
+              <input type="hidden" name="info" value="{{ item.meta }}">
+              <button type="submit" class="btn btn-sm btn-custom">Up Next</button>
+            </form>
+  
+            <!-- Add to Favorites -->
+            <form action="{{ url_for('add_favorite') }}" method="POST">
+              <input type="hidden" name="title" value="{{ item.title }}">
+              <input type="hidden" name="type" value="{{ item.type }}">
+              <button type="submit" class="btn btn-lg">❤️</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  

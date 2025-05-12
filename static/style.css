@@ -61,3 +61,10 @@ p {
     font-size: 15px;
 }
 
+.card {
+    border-radius: 12px;
+  }
+  .card img {
+    object-fit: contain;
+  }
+  

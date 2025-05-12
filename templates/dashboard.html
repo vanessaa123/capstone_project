@@ -9,6 +9,9 @@
         {% for review in reviews %}
             <li class="list-group-item">
                 <strong>{{ review.title }} ({{ review.type }})</strong>
+                {% if review.title in favorite_titles %}
+                <span style="color: red;">❤️</span>
+                {% endif %}
                 <p><strong>Rating:</strong> {{ review.rating }}/5 ⭐</p>
                 <p>{{ review.content }}</p>
                 <a href="{{ url_for('edit_review', review_id=review._id) }}" class="btn btn-sm btn-warning">Edit</a>

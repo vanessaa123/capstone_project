@@ -25,6 +25,7 @@ db = client['reviews_app']
 users = db['users']
 reviews = db['reviews']
 up_next = db['up_next']
+favorites = db["favorites"]
 
 
 def admin_required(f):
@@ -186,20 +187,35 @@ def create_review():
     return render_template('create_review.html')
 
 
-@app.route('/edit/<review_id>', methods=['GET', 'POST'])
+@app.route('/edit_review/<review_id>', methods=['GET', 'POST'])
 def edit_review(review_id):
+    if 'username' not in session:
+        return redirect(url_for('login'))
+
     review = reviews.find_one({'_id': ObjectId(review_id)})
+
+    if not review or review['username'] != session['username']:
+        flash("Review not found or unauthorized access.")
+        return redirect(url_for('reviews_page'))
+
+    is_favorite = favorites.find_one({
+        'username': session['username'],
+        'title': review['title'],
+        'type': review['type']
+    })
+
     if request.method == 'POST':
-        reviews.update_one({'_id': ObjectId(review_id)}, {
-            '$set': {
-                'title': request.form['title'],
-                'type': request.form['type'],
-                'content': request.form['content'],
-                'rating': float(request.form['rating'])
-            }
-        })
+        rating = float(request.form['rating'])
+        content = request.form['content']
+        reviews.update_one({'_id': review['_id']}, {'$set': {
+            'rating': rating,
+            'content': content
+        }})
+        flash("Review updated successfully.")
         return redirect(url_for('dashboard'))
-    return render_template('edit_review.html', review=review)
+
+    return render_template('edit_review.html', review=review, is_favorite=bool(is_favorite))
+
 
 @app.route('/delete/<review_id>')
 def delete_review(review_id):
@@ -211,22 +227,32 @@ from flask import request
 @app.route('/save_review', methods=['POST'])
 def save_review():
     if 'username' not in session:
-        flash("You must be logged in to save a review.")
         return redirect(url_for('login'))
 
-    title = request.form.get('title')
-    review_type = request.form.get('type')
-    content = request.form.get('content')
+    title = request.form['title']
+    type_ = request.form['type']
+    content = request.form['content']
 
-    reviews.insert_one({
+    existing = reviews.find_one({
         'username': session['username'],
         'title': title,
-        'type': review_type,
-        'content': content
+        'type': type_
     })
 
-    flash("Saved to your reviews!")
-    return redirect(url_for('dashboard'))
+    if existing:
+        # Redirect to existing review's edit page
+        return redirect(url_for('edit_review', review_id=existing['_id']))
+    else:
+        new_review = {
+            'username': session['username'],
+            'title': title,
+            'type': type_,
+            'content': content,
+            'rating': 0  # or default value
+        }
+        result = reviews.insert_one(new_review)
+        return redirect(url_for('edit_review', review_id=result.inserted_id))
+
 
 @app.route('/add_up_next', methods=['POST'])
 def add_up_next():
@@ -303,10 +329,17 @@ def reviews_page():
     if 'username' not in session:
         return redirect(url_for('login'))
 
-    all_reviews = list(reviews.find({'username': session['username']}).sort('_id', -1))
-    return render_template('reviews.html', reviews=all_reviews)
+    all_reviews = list(reviews.find({'username': session['username']}))
+    favorite_titles = [f['title'] for f in favorites.find({'username': session['username']})]
 
-from collections import Counter
+    filter_option = request.args.get('filter')
+    if filter_option == 'favorites':
+        filtered_reviews = [r for r in all_reviews if r['title'] in favorite_titles]
+    else:
+        filtered_reviews = all_reviews
+
+    return render_template('reviews.html', reviews=filtered_reviews, favorite_titles=favorite_titles, current_filter=filter_option)
+
 
 @app.route('/stats')
 def stats():
@@ -373,6 +406,33 @@ def recommendations():
             recommendation = "Sorry, we couldn't fetch a recommendation right now."
 
     return render_template('recommendations.html', recommendation=recommendation)
+
+@app.route('/add_favorite', methods=['POST'])
+def add_favorite():
+    if 'username' not in session:
+        return redirect(url_for('login'))
+
+    title = request.form['title']
+    type_ = request.form['type']
+
+    if not favorites.find_one({'username': session['username'], 'title': title, 'type': type_}):
+        favorites.insert_one({
+            'username': session['username'],
+            'title': title,
+            'type': type_
+        })
+
+    return redirect(request.referrer)
+
+@app.route('/remove_favorite', methods=['POST'])
+def remove_favorite():
+    favorites.delete_one({
+        'username': session['username'],
+        'title': request.form['title'],
+        'type': request.form['type']
+    })
+    return redirect(request.referrer)
+
 
 if __name__ == '__main__':
     app.run(debug=True)

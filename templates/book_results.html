@@ -3,7 +3,7 @@
 <h2>Book Search Results for "{{ search_query }}"</h2>
 
 {% if books %}
-    <ul class="list-group">
+    <div class="container">
         {% for book in books %}
             {% set item = {
                 'title': book.title,
@@ -13,7 +13,7 @@
             } %}
             {% include '_result_card.html' %}
         {% endfor %}
-    </ul>
+    </div>
 {% else %}
     <p>No results found.</p>
 {% endif %}

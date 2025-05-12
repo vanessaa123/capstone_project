@@ -3,7 +3,7 @@
 <h2>Movie Search Results for "{{ search_query }}"</h2>
 
 {% if movies %}
-    <ul class="list-group">
+  <div class="container">
         {% for movie in movies %}
             {% set item = {
                 'title': movie.Title,
@@ -13,7 +13,7 @@
             } %}
             {% include '_result_card.html' %}
         {% endfor %}
-    </ul>
+  </div>
 {% else %}
     <p>No results found.</p>
 {% endif %}
